@@ -1,3 +1,5 @@
+name: test-bench-db-and-managers
+
 services:
   # ============================================
   # RELATIONAL DATABASES
@@ -133,7 +135,7 @@ services:
   # SQLite (via container with sample database)
   sqlite:
     image: nouchka/sqlite3:latest
-    container_name: pdi-sqlite
+    container_name: pdi-sqlite-test
     volumes:
       - sqlite-data:/root/db
     networks:
@@ -354,7 +356,7 @@ services:
   # phpMyAdmin
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: pdi-phpmyadmin
+    container_name: pdi-test-phpmyadmin
     environment:
       PMA_ARBITRARY: 1
       PMA_HOSTS: mysql8,mysql57,mariadb
