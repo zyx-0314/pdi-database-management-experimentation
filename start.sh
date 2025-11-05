@@ -143,7 +143,6 @@ RELATIONAL DATABASES:
   Oracle XE         : localhost:1521
   CockroachDB       : localhost:26257 (UI: 8080)
   NeonDB            : localhost:5434
-  Supabase DB       : localhost:5433 (Studio: 3000)
 
 NoSQL DATABASES:
   MongoDB           : localhost:27017
@@ -155,6 +154,7 @@ NoSQL DATABASES:
 ANALYTICAL DATABASES:
   ClickHouse        : localhost:8123 (Native: 9000)
   InfluxDB          : localhost:8086
+  DuckDB            : (access via container shell)
 
 MANAGEMENT TOOLS:
   phpMyAdmin        : http://localhost:8081
@@ -164,7 +164,6 @@ MANAGEMENT TOOLS:
   DBGate            : http://localhost:3001
   Mongo Express     : http://localhost:8083
   Redis Commander   : http://localhost:8084
-  Firebase UI       : http://localhost:4000
 
 EOF
 }

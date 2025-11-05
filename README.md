@@ -27,9 +27,9 @@ A comprehensive dockerized environment for testing and experimenting with multip
 - **DuckDB** - In-process analytical database
 
 ### Cloud-Native / Modern Databases
-- **Supabase** (Port 5433, Studio: 3000) - PostgreSQL with real-time features
-- **Firebase Emulator** (UI: 4000) - Firebase local development
-- **NeonDB** (Port 5434) - Serverless PostgreSQL
+- **NeonDB** (Port 5434) - Serverless PostgreSQL (local instance)
+
+**Note:** All databases run **completely offline** and do not require internet connectivity after initial docker image download.
 
 ## 🛠️ Management Tools
 
@@ -217,14 +217,6 @@ User: influx
 Password: influxpassword
 ```
 
-### Supabase
-```
-Database Port: 5433
-Studio: http://localhost:3000
-User: postgres
-Password: supabase
-```
-
 ### NeonDB
 ```
 Host: localhost
@@ -380,7 +372,12 @@ Reduce the number of running services or increase Docker's memory limit.
 ├── .env.example               # Environment variables template
 ├── .gitignore                # Git ignore rules
 ├── README.md                 # This file
-├── firebase/                 # Firebase emulator config (auto-created)
+```
+.
+├── docker-compose.yml          # Main orchestration file
+├── .env.example               # Environment variables template
+├── .gitignore                # Git ignore rules
+├── README.md                 # This file
 └── init-scripts/            # Database initialization scripts
 ```
 
@@ -398,13 +395,13 @@ Reduce the number of running services or increase Docker's memory limit.
 
 ## 📝 Notes
 
+- **All databases run completely offline** - No internet connection required after downloading Docker images
 - **SQLite** is available in a container but is primarily file-based. Access it via the container shell.
 - **DuckDB** runs in a container for consistency but is also file-based and best used via CLI.
-- **Firebase** uses the emulator suite for local development.
-- **Supabase** runs a simplified version with PostgreSQL and Studio.
 - **NeonDB** is simulated using PostgreSQL with similar configuration.
 - **TablePlus** is a desktop application and cannot be dockerized. Use **DBGate** or **CloudBeaver** as web alternatives.
 - **Beekeeper Studio** is a desktop application. Use **DBGate** as a web alternative.
+- **Firebase** and **Supabase** have been omitted as they require online connectivity for proper functionality.
 
 ## 🤝 Contributing
 

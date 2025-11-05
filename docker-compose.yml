@@ -307,78 +307,20 @@ services:
       timeout: 5s
       retries: 5
 
-  # DuckDB (via container)
+  # DuckDB (standalone database - access via container shell)
   duckdb:
-    image: alpine:latest
+    image: davidgasquez/duckdb:latest
     container_name: pdi-duckdb
     volumes:
       - duckdb-data:/data
     networks:
       - db-network
-    command: >
-      sh -c "apk add --no-cache wget unzip &&
-             wget https://github.com/duckdb/duckdb/releases/download/v0.9.2/duckdb_cli-linux-amd64.zip -O /tmp/duckdb.zip &&
-             unzip /tmp/duckdb.zip -d /usr/local/bin &&
-             chmod +x /usr/local/bin/duckdb &&
-             tail -f /dev/null"
+    command: tail -f /dev/null
 
   # ============================================
-  # CLOUD-NATIVE / MODERN DATABASES
+  # CLOUD-NATIVE / MODERN DATABASES  
   # ============================================
-
-  # Supabase (PostgreSQL-based with additional services)
-  supabase-db:
-    image: supabase/postgres:15.1.0.117
-    container_name: pdi-supabase-db
-    environment:
-      POSTGRES_PASSWORD: supabase
-      POSTGRES_DB: postgres
-    ports:
-      - "5433:5432"
-    volumes:
-      - supabase-data:/var/lib/postgresql/data
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  supabase-studio:
-    image: supabase/studio:20231123-64ce192
-    container_name: pdi-supabase-studio
-    environment:
-      SUPABASE_URL: http://supabase-kong:8000
-      STUDIO_PG_META_URL: http://supabase-meta:8080
-      SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
-      SUPABASE_SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
-    ports:
-      - "3000:3000"
-    networks:
-      - db-network
-    depends_on:
-      - supabase-db
-
-  # Firebase Emulator
-  firebase:
-    image: node:18-alpine
-    container_name: pdi-firebase
-    working_dir: /app
-    volumes:
-      - ./firebase:/app
-      - firebase-data:/data
-    ports:
-      - "4000:4000"  # Emulator Suite UI
-      - "9099:9099"  # Authentication
-      - "8081:8081"  # Firestore
-      - "9199:9199"  # Storage
-      - "5001:5001"  # Functions
-    networks:
-      - db-network
-    command: >
-      sh -c "npm install -g firebase-tools &&
-             firebase emulators:start --project demo-project || tail -f /dev/null"
+  # Note: Firebase and Supabase removed - they require online connectivity
 
   # NeonDB (Local Postgres with Neon-like features)
   neondb:
@@ -529,8 +471,6 @@ volumes:
   clickhouse-data:
   influxdb-data:
   duckdb-data:
-  supabase-data:
-  firebase-data:
   neon-data:
   pgadmin-data:
   cloudbeaver-data:
