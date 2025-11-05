@@ -154,7 +154,7 @@ docker volume rm pdi-database-management-experimentation_postgres-data
 # Check what's using the port
 lsof -i :5432  # Replace 5432 with your port
 
-# Change port in docker-compose.yml
+# Change port in docker compose.yml
 # Change "5432:5432" to "5433:5432"
 ```
 

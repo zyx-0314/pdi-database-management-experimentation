@@ -66,33 +66,33 @@ cp .env.example .env
 
 3. Start all services:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 4. Start specific services:
 ```bash
 # Start only PostgreSQL and pgAdmin
-docker-compose up -d postgresql pgadmin
+docker compose up -d postgresql pgadmin
 
 # Start only MySQL databases
-docker-compose up -d mysql8 mysql57 mariadb phpmyadmin
+docker compose up -d mysql8 mysql57 mariadb phpmyadmin
 
 # Start NoSQL databases
-docker-compose up -d mongodb redis neo4j
+docker compose up -d mongodb redis neo4j
 ```
 
 5. Check service status:
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 6. View logs:
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f postgresql
+docker compose logs -f postgresql
 ```
 
 ## 📋 Connection Details
@@ -300,23 +300,23 @@ This environment is perfect for:
 
 ### Stop All Services
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Stop and Remove Volumes (⚠️ Deletes all data)
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Restart Specific Service
 ```bash
-docker-compose restart postgresql
+docker compose restart postgresql
 ```
 
 ### Update Images
 ```bash
-docker-compose pull
-docker-compose up -d
+docker compose pull
+docker compose up -d
 ```
 
 ### View Resource Usage
@@ -333,7 +333,7 @@ docker exec -it pdi-postgresql /bin/bash
 
 All databases include health checks. View status:
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Healthy services show `(healthy)` in the status column.
@@ -343,12 +343,12 @@ Healthy services show `(healthy)` in the status column.
 ### Port Already in Use
 If a port is already in use, you can either:
 1. Stop the conflicting service
-2. Change the port in `docker-compose.yml` (left side of port mapping)
+2. Change the port in `docker compose.yml` (left side of port mapping)
 
 ### Container Won't Start
 Check logs:
 ```bash
-docker-compose logs [service-name]
+docker compose logs [service-name]
 ```
 
 ### Out of Memory
@@ -361,20 +361,20 @@ Reduce the number of running services or increase Docker's memory limit.
 
 ### Database Connection Refused
 - Wait for health checks to pass (some databases take time to initialize)
-- Check if the service is running: `docker-compose ps`
+- Check if the service is running: `docker compose ps`
 - Verify firewall settings
 
 ## 📁 Project Structure
 
 ```
 .
-├── docker-compose.yml          # Main orchestration file
+├── docker compose.yml          # Main orchestration file
 ├── .env.example               # Environment variables template
 ├── .gitignore                # Git ignore rules
 ├── README.md                 # This file
 ```
 .
-├── docker-compose.yml          # Main orchestration file
+├── docker compose.yml          # Main orchestration file
 ├── .env.example               # Environment variables template
 ├── .gitignore                # Git ignore rules
 ├── README.md                 # This file

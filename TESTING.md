@@ -587,7 +587,7 @@ After testing, clean up resources:
 
 ```bash
 # Remove all data
-docker-compose down -v
+docker compose down -v
 
 # Or remove specific service data
 docker volume rm pdi-database-management-experimentation_postgresql-data

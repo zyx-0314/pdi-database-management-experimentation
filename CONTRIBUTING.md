@@ -4,9 +4,9 @@ Thank you for your interest in contributing! This guide will help you add new da
 
 ## Adding a New Database
 
-To add a new database to the docker-compose setup:
+To add a new database to the docker compose setup:
 
-1. **Add the service to docker-compose.yml**:
+1. **Add the service to docker compose.yml**:
 ```yaml
   newdatabase:
     image: newdatabase:latest
@@ -54,7 +54,7 @@ NEWDB_PASSWORD=password
 
 To add a new management tool:
 
-1. **Add the service to docker-compose.yml**:
+1. **Add the service to docker compose.yml**:
 ```yaml
   newtool:
     image: newtool:latest
@@ -111,8 +111,8 @@ Before submitting changes:
 
 1. **Test the service starts**:
 ```bash
-docker-compose up -d your-service
-docker-compose ps your-service
+docker compose up -d your-service
+docker compose ps your-service
 ```
 
 2. **Test the connection**:
@@ -122,7 +122,7 @@ docker-compose ps your-service
 
 3. **Check logs**:
 ```bash
-docker-compose logs your-service
+docker compose logs your-service
 ```
 
 4. **Test health check**:
@@ -132,8 +132,8 @@ docker inspect --format='{{.State.Health.Status}}' pdi-your-service
 
 5. **Test cleanup**:
 ```bash
-docker-compose down
-docker-compose down -v
+docker compose down
+docker compose down -v
 ```
 
 ## Submitting Changes
@@ -157,7 +157,7 @@ docker-compose down -v
 
 ## Code Style
 
-### docker-compose.yml
+### docker compose.yml
 - Use 2-space indentation
 - Order services logically (by category)
 - Include comments for complex configurations

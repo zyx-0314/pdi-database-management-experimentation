@@ -15,6 +15,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - db-network
     healthcheck:
@@ -36,6 +37,7 @@ services:
       - "3308:3306"
     volumes:
       - mysql8-data:/var/lib/mysql
+      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - db-network
     command: --default-authentication-plugin=mysql_native_password
@@ -58,6 +60,7 @@ services:
       - "3307:3306"
     volumes:
       - mysql57-data:/var/lib/mysql
+      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - db-network
     healthcheck:
@@ -79,6 +82,7 @@ services:
       - "3309:3306"
     volumes:
       - mariadb-data:/var/lib/mysql
+      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - db-network
     healthcheck:
@@ -170,6 +174,7 @@ services:
       - "27017:27017"
     volumes:
       - mongodb-data:/data/db
+      - ./init-scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - db-network
     healthcheck:
@@ -190,7 +195,7 @@ services:
     networks:
       - db-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "redis", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5

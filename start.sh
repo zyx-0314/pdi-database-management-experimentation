@@ -33,7 +33,7 @@ check_docker() {
         exit 1
     fi
     
-    if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+    if ! command -v docker compose &> /dev/null && ! docker compose version &> /dev/null; then
         print_message "Docker Compose is not installed. Please install Docker Compose first." "$RED"
         exit 1
     fi
@@ -61,7 +61,7 @@ show_menu() {
 # Start all services
 start_all() {
     print_message "Starting all services..." "$BLUE"
-    docker-compose up -d
+    docker compose up -d
     print_message "All services started successfully!" "$GREEN"
     show_ports
 }
@@ -69,35 +69,35 @@ start_all() {
 # Start relational databases
 start_relational() {
     print_message "Starting relational databases..." "$BLUE"
-    docker-compose up -d postgresql mysql8 mysql57 mariadb mssql oracle sqlite cockroachdb
+    docker compose up -d postgresql mysql8 mysql57 mariadb mssql oracle sqlite cockroachdb
     print_message "Relational databases started!" "$GREEN"
 }
 
 # Start NoSQL databases
 start_nosql() {
     print_message "Starting NoSQL databases..." "$BLUE"
-    docker-compose up -d mongodb redis cassandra neo4j arangodb
+    docker compose up -d mongodb redis cassandra neo4j arangodb
     print_message "NoSQL databases started!" "$GREEN"
 }
 
 # Start analytical databases
 start_analytical() {
     print_message "Starting analytical databases..." "$BLUE"
-    docker-compose up -d clickhouse influxdb duckdb
+    docker compose up -d clickhouse influxdb duckdb
     print_message "Analytical databases started!" "$GREEN"
 }
 
 # Start management tools
 start_management() {
     print_message "Starting management tools..." "$BLUE"
-    docker-compose up -d phpmyadmin adminer pgadmin cloudbeaver dbgate mongo-express redis-commander
+    docker compose up -d phpmyadmin adminer pgadmin cloudbeaver dbgate mongo-express redis-commander
     print_message "Management tools started!" "$GREEN"
 }
 
 # Stop all services
 stop_all() {
     print_message "Stopping all services..." "$YELLOW"
-    docker-compose down
+    docker compose down
     print_message "All services stopped!" "$GREEN"
 }
 
@@ -106,7 +106,7 @@ remove_all() {
     read -p "⚠️  This will DELETE ALL DATA! Are you sure? (yes/no): " confirm
     if [ "$confirm" = "yes" ]; then
         print_message "Stopping and removing all services and data..." "$RED"
-        docker-compose down -v
+        docker compose down -v
         print_message "All services and data removed!" "$GREEN"
     else
         print_message "Operation cancelled." "$YELLOW"
@@ -116,7 +116,7 @@ remove_all() {
 # Show service status
 show_status() {
     print_header "Service Status"
-    docker-compose ps
+    docker compose ps
 }
 
 # Show logs
@@ -124,9 +124,9 @@ show_logs() {
     echo ""
     read -p "Enter service name (or press Enter for all): " service
     if [ -z "$service" ]; then
-        docker-compose logs --tail=50 -f
+        docker compose logs --tail=50 -f
     else
-        docker-compose logs --tail=50 -f "$service"
+        docker compose logs --tail=50 -f "$service"
     fi
 }
 
@@ -171,7 +171,7 @@ EOF
 # Run health check
 health_check() {
     print_header "Health Check"
-    docker-compose ps | grep -E "(healthy|up)"
+    docker compose ps | grep -E "(healthy|up)"
 }
 
 # Main loop

@@ -1,6 +1,6 @@
 # Docker Compose Override Example
 # Copy this file to docker-compose.override.yml and customize as needed
-# The override file is automatically loaded by docker-compose
+# The override file is automatically loaded by docker compose
 
 services:
   # Example: Change PostgreSQL port
