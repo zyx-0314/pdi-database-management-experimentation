@@ -1,0 +1,37 @@
+# Docker Compose Override Example
+# Copy this file to docker-compose.override.yml and customize as needed
+# The override file is automatically loaded by docker-compose
+
+services:
+  # Example: Change PostgreSQL port
+  # postgresql:
+  #   ports:
+  #     - "5433:5432"
+
+  # Example: Add custom environment variables
+  # mysql8:
+  #   environment:
+  #     MYSQL_MAX_CONNECTIONS: 500
+
+  # Example: Mount custom configuration
+  # postgresql:
+  #   volumes:
+  #     - ./custom-config/postgresql.conf:/etc/postgresql/postgresql.conf
+
+  # Example: Limit resources
+  # mongodb:
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '2'
+  #         memory: 2G
+
+  # Example: Add custom initialization scripts
+  # postgresql:
+  #   volumes:
+  #     - ./custom-init:/docker-entrypoint-initdb.d
+
+  # Example: Disable a service
+  # cassandra:
+  #   profiles:
+  #     - disabled
