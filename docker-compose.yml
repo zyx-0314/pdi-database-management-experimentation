@@ -1,484 +1,488 @@
 name: test-bench-db-and-managers
 
 services:
-  # ============================================
-  # RELATIONAL DATABASES
-  # ============================================
-  
-  # PostgreSQL
-  postgresql:
-    image: postgres:16-alpine
-    container_name: pdi-postgresql
-    environment:
-      POSTGRES_DB: testdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./init-scripts/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # ============================================
+    # RELATIONAL DATABASES
+    # ============================================
 
-  # MySQL 8
-  mysql8:
-    image: mysql:8.0
-    container_name: pdi-mysql8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql
-    ports:
-      - "3308:3306"
-    volumes:
-      - mysql8-data:/var/lib/mysql
-      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - db-network
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # PostgreSQL
+    postgresql:
+        image: postgres:16-alpine
+        container_name: pdi-postgresql
+        environment:
+            POSTGRES_DB: testdb
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+            - ./init-scripts/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U postgres']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # MySQL 5.7
-  mysql57:
-    image: mysql:5.7
-    container_name: pdi-mysql57
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql57-data:/var/lib/mysql
-      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # MySQL 8
+    mysql8:
+        image: mysql:8.0
+        container_name: pdi-mysql8
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: testdb
+            MYSQL_USER: mysql
+            MYSQL_PASSWORD: mysql
+        ports:
+            - '3308:3306'
+        volumes:
+            - mysql8-data:/var/lib/mysql
+            - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        networks:
+            - db-network
+        command: --default-authentication-plugin=mysql_native_password
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # MariaDB
-  mariadb:
-    image: mariadb:11
-    container_name: pdi-mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: mariadb
-      MYSQL_PASSWORD: mariadb
-    ports:
-      - "3309:3306"
-    volumes:
-      - mariadb-data:/var/lib/mysql
-      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # MySQL 5.7
+    mysql57:
+        image: mysql:5.7
+        container_name: pdi-mysql57
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: testdb
+            MYSQL_USER: mysql
+            MYSQL_PASSWORD: mysql
+        ports:
+            - '3307:3306'
+        volumes:
+            - mysql57-data:/var/lib/mysql
+            - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # MS SQL Server
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: pdi-mssql
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourStrong@Passw0rd"
-      MSSQL_PID: "Express"
-    ports:
-      - "1433:1433"
-    volumes:
-      - mssql-data:/var/opt/mssql
-    networks:
-      - db-network
-    healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong@Passw0rd" -Q "SELECT 1" || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # MariaDB
+    mariadb:
+        image: mariadb:11
+        container_name: pdi-mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: testdb
+            MYSQL_USER: mariadb
+            MYSQL_PASSWORD: mariadb
+        ports:
+            - '3309:3306'
+        volumes:
+            - mariadb-data:/var/lib/mysql
+            - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # Oracle XE
-  oracle:
-    image: gvenzl/oracle-xe:21-slim
-    container_name: pdi-oracle
-    environment:
-      ORACLE_PASSWORD: oracle
-      ORACLE_DATABASE: testdb
-    ports:
-      - "1521:1521"
-    volumes:
-      - oracle-data:/opt/oracle/oradata
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "healthcheck.sh"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    # MS SQL Server
+    mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: pdi-mssql
+        environment:
+            ACCEPT_EULA: 'Y'
+            SA_PASSWORD: 'YourStrong@Passw0rd'
+            MSSQL_PID: 'Express'
+        ports:
+            - '1433:1433'
+        volumes:
+            - mssql-data:/var/opt/mssql
+        networks:
+            - db-network
+        healthcheck:
+            test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong@Passw0rd" -Q "SELECT 1" || exit 1
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # SQLite (via container with sample database)
-  sqlite:
-    image: nouchka/sqlite3:latest
-    container_name: pdi-sqlite-test
-    volumes:
-      - sqlite-data:/root/db
-    networks:
-      - db-network
-    command: tail -f /dev/null
+    # Oracle XE
+    oracle:
+        image: gvenzl/oracle-xe:21-slim
+        container_name: pdi-oracle
+        environment:
+            ORACLE_PASSWORD: oracle
+            ORACLE_DATABASE: testdb
+        ports:
+            - '1521:1521'
+        volumes:
+            - oracle-data:/opt/oracle/oradata
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh']
+            interval: 30s
+            timeout: 10s
+            retries: 5
 
-  # CockroachDB
-  cockroachdb:
-    image: cockroachdb/cockroach:latest
-    container_name: pdi-cockroachdb
-    command: start-single-node --insecure
-    ports:
-      - "26257:26257"
-      - "8080:8080"
-    volumes:
-      - cockroach-data:/cockroach/cockroach-data
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health?ready=1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # SQLite (via container with sample database)
+    sqlite:
+        image: nouchka/sqlite3:latest
+        container_name: pdi-sqlite-test
+        volumes:
+            - sqlite-data:/root/db
+        networks:
+            - db-network
+        # override the image entrypoint which invokes sqlite3 with unsupported options
+        entrypoint: ['tail', '-f', '/dev/null']
 
-  # ============================================
-  # NoSQL DATABASES
-  # ============================================
+    # CockroachDB
+    cockroachdb:
+        image: cockroachdb/cockroach:latest
+        container_name: pdi-cockroachdb
+        command: start-single-node --insecure
+        ports:
+            - '26257:26257'
+            - '8080:8080'
+        volumes:
+            - cockroach-data:/cockroach/cockroach-data
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:8080/health?ready=1']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # MongoDB
-  mongodb:
-    image: mongo:7
-    container_name: pdi-mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: testdb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-      - ./init-scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    networks:
-      - db-network
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # ============================================
+    # NoSQL DATABASES
+    # ============================================
 
-  # Redis
-  redis:
-    image: redis:7-alpine
-    container_name: pdi-redis
-    command: redis-server --requirepass redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "redis", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # MongoDB
+    mongodb:
+        image: mongo:7
+        container_name: pdi-mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: mongo
+            MONGO_INITDB_DATABASE: testdb
+        ports:
+            - '27017:27017'
+        volumes:
+            - mongodb-data:/data/db
+            - ./init-scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+        networks:
+            - db-network
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # Cassandra
-  cassandra:
-    image: cassandra:5
-    container_name: pdi-cassandra
-    environment:
-      CASSANDRA_CLUSTER_NAME: "TestCluster"
-      CASSANDRA_DC: "dc1"
-      CASSANDRA_ENDPOINT_SNITCH: "GossipingPropertyFileSnitch"
-    ports:
-      - "9042:9042"
-      - "9160:9160"
-    volumes:
-      - cassandra-data:/var/lib/cassandra
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD-SHELL", "nodetool status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    # Redis
+    redis:
+        image: redis:7-alpine
+        container_name: pdi-redis
+        command: redis-server --requirepass redis
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis-data:/data
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'redis-cli', '-a', 'redis', 'ping']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # Neo4j
-  neo4j:
-    image: neo4j:5
-    container_name: pdi-neo4j
-    environment:
-      NEO4J_AUTH: neo4j/neo4jpassword
-      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    volumes:
-      - neo4j-data:/data
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "neo4jpassword", "RETURN 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # Cassandra
+    cassandra:
+        image: cassandra:5
+        container_name: pdi-cassandra
+        environment:
+            CASSANDRA_CLUSTER_NAME: 'TestCluster'
+            CASSANDRA_DC: 'dc1'
+            CASSANDRA_ENDPOINT_SNITCH: 'GossipingPropertyFileSnitch'
+            # Reduce JVM heap to avoid OOM on machines with limited Docker memory
+            MAX_HEAP_SIZE: '1G'
+            HEAP_NEWSIZE: '256M'
+        ports:
+            - '9042:9042'
+            - '9160:9160'
+        volumes:
+            - cassandra-data:/var/lib/cassandra
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD-SHELL', 'nodetool status']
+            interval: 30s
+            timeout: 10s
+            retries: 5
 
-  # ArangoDB
-  arangodb:
-    image: arangodb:3.11
-    container_name: pdi-arangodb
-    environment:
-      ARANGO_ROOT_PASSWORD: arango
-    ports:
-      - "8529:8529"
-    volumes:
-      - arangodb-data:/var/lib/arangodb3
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8529/_api/version"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # Neo4j
+    neo4j:
+        image: neo4j:5
+        container_name: pdi-neo4j
+        environment:
+            NEO4J_AUTH: neo4j/neo4jpassword
+            NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
+        ports:
+            - '7474:7474'
+            - '7687:7687'
+        volumes:
+            - neo4j-data:/data
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'cypher-shell', '-u', 'neo4j', '-p', 'neo4jpassword', 'RETURN 1']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # ============================================
-  # ANALYTICAL DATABASES
-  # ============================================
+    # ArangoDB
+    arangodb:
+        image: arangodb:3.11
+        container_name: pdi-arangodb
+        environment:
+            ARANGO_ROOT_PASSWORD: arango
+        ports:
+            - '8529:8529'
+        volumes:
+            - arangodb-data:/var/lib/arangodb3
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:8529/_api/version']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # ClickHouse
-  clickhouse:
-    image: clickhouse/clickhouse-server:latest
-    container_name: pdi-clickhouse
-    environment:
-      CLICKHOUSE_DB: testdb
-      CLICKHOUSE_USER: clickhouse
-      CLICKHOUSE_PASSWORD: clickhouse
-      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
-    ports:
-      - "8123:8123"
-      - "9000:9000"
-    volumes:
-      - clickhouse-data:/var/lib/clickhouse
-    networks:
-      - db-network
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # ============================================
+    # ANALYTICAL DATABASES
+    # ============================================
 
-  # InfluxDB
-  influxdb:
-    image: influxdb:2.7-alpine
-    container_name: pdi-influxdb
-    environment:
-      DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: influx
-      DOCKER_INFLUXDB_INIT_PASSWORD: influxpassword
-      DOCKER_INFLUXDB_INIT_ORG: testorg
-      DOCKER_INFLUXDB_INIT_BUCKET: testbucket
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: influxtoken123
-    ports:
-      - "8086:8086"
-    volumes:
-      - influxdb-data:/var/lib/influxdb2
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "influx", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # ClickHouse
+    clickhouse:
+        image: clickhouse/clickhouse-server:latest
+        container_name: pdi-clickhouse
+        environment:
+            CLICKHOUSE_DB: testdb
+            CLICKHOUSE_USER: clickhouse
+            CLICKHOUSE_PASSWORD: clickhouse
+            CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+        ports:
+            - '8123:8123'
+            - '9000:9000'
+        volumes:
+            - clickhouse-data:/var/lib/clickhouse
+        networks:
+            - db-network
+        ulimits:
+            nofile:
+                soft: 262144
+                hard: 262144
+        healthcheck:
+            test: ['CMD', 'wget', '--spider', '-q', 'localhost:8123/ping']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # DuckDB (standalone database - access via container shell)
-  duckdb:
-    image: davidgasquez/duckdb:latest
-    container_name: pdi-duckdb
-    volumes:
-      - duckdb-data:/data
-    networks:
-      - db-network
-    command: tail -f /dev/null
+    # InfluxDB
+    influxdb:
+        image: influxdb:2.7-alpine
+        container_name: pdi-influxdb
+        environment:
+            DOCKER_INFLUXDB_INIT_MODE: setup
+            DOCKER_INFLUXDB_INIT_USERNAME: influx
+            DOCKER_INFLUXDB_INIT_PASSWORD: influxpassword
+            DOCKER_INFLUXDB_INIT_ORG: testorg
+            DOCKER_INFLUXDB_INIT_BUCKET: testbucket
+            DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: influxtoken123
+        ports:
+            - '8086:8086'
+        volumes:
+            - influxdb-data:/var/lib/influxdb2
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD', 'influx', 'ping']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # ============================================
-  # CLOUD-NATIVE / MODERN DATABASES  
-  # ============================================
-  # Note: Firebase and Supabase removed - they require online connectivity
+    # DuckDB (standalone database - access via container shell)
+    duckdb:
+        image: davidgasquez/duckdb:latest
+        container_name: pdi-duckdb
+        volumes:
+            - duckdb-data:/data
+        networks:
+            - db-network
+        command: tail -f /dev/null
 
-  # NeonDB (Local Postgres with Neon-like features)
-  neondb:
-    image: postgres:16-alpine
-    container_name: pdi-neondb
-    environment:
-      POSTGRES_DB: neondb
-      POSTGRES_USER: neon
-      POSTGRES_PASSWORD: neon
-    ports:
-      - "5434:5432"
-    volumes:
-      - neon-data:/var/lib/postgresql/data
-    networks:
-      - db-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U neon"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # ============================================
+    # CLOUD-NATIVE / MODERN DATABASES
+    # ============================================
+    # Note: Firebase and Supabase removed - they require online connectivity
 
-  # ============================================
-  # DATABASE MANAGEMENT TOOLS
-  # ============================================
+    # NeonDB (Local Postgres with Neon-like features)
+    neondb:
+        image: postgres:16-alpine
+        container_name: pdi-neondb
+        environment:
+            POSTGRES_DB: neondb
+            POSTGRES_USER: neon
+            POSTGRES_PASSWORD: neon
+        ports:
+            - '5434:5432'
+        volumes:
+            - neon-data:/var/lib/postgresql/data
+        networks:
+            - db-network
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U neon']
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # phpMyAdmin
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: pdi-test-phpmyadmin
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOSTS: mysql8,mysql57,mariadb
-      PMA_PORTS: 3306,3306,3306
-    ports:
-      - "8081:80"
-    networks:
-      - db-network
-    depends_on:
-      - mysql8
-      - mysql57
-      - mariadb
+    # ============================================
+    # DATABASE MANAGEMENT TOOLS
+    # ============================================
 
-  # Adminer
-  adminer:
-    image: adminer:latest
-    container_name: pdi-adminer
-    environment:
-      ADMINER_DEFAULT_SERVER: postgresql
-      ADMINER_DESIGN: pepa-linha
-    ports:
-      - "8082:8080"
-    networks:
-      - db-network
+    # phpMyAdmin
+    phpmyadmin:
+        image: phpmyadmin:latest
+        container_name: pdi-test-phpmyadmin
+        environment:
+            PMA_ARBITRARY: 1
+            PMA_HOSTS: mysql8,mysql57,mariadb
+            PMA_PORTS: 3306,3306,3306
+        ports:
+            - '8081:80'
+        networks:
+            - db-network
+        depends_on:
+            - mysql8
+            - mysql57
+            - mariadb
 
-  # pgAdmin
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pdi-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    networks:
-      - db-network
-    depends_on:
-      - postgresql
+    # Adminer
+    adminer:
+        image: adminer:latest
+        container_name: pdi-adminer
+        environment:
+            ADMINER_DEFAULT_SERVER: postgresql
+            ADMINER_DESIGN: pepa-linha
+        ports:
+            - '8082:8080'
+        networks:
+            - db-network
 
-  # DBeaver (CloudBeaver - Web version)
-  cloudbeaver:
-    image: dbeaver/cloudbeaver:latest
-    container_name: pdi-cloudbeaver
-    ports:
-      - "8978:8978"
-    volumes:
-      - cloudbeaver-data:/opt/cloudbeaver/workspace
-    networks:
-      - db-network
+    # pgAdmin
+    pgadmin:
+        image: dpage/pgadmin4:latest
+        container_name: pdi-pgadmin
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+            PGADMIN_CONFIG_SERVER_MODE: 'False'
+            PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+        ports:
+            - '5050:80'
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
+        networks:
+            - db-network
+        depends_on:
+            - postgresql
 
-  # Beekeeper Studio (via web-based alternative using dbgate)
-  dbgate:
-    image: dbgate/dbgate:latest
-    container_name: pdi-dbgate
-    ports:
-      - "3001:3000"
-    volumes:
-      - dbgate-data:/root/.dbgate
-    networks:
-      - db-network
-    environment:
-      CONNECTIONS: |
-        postgres
-        mysql8
-        mongodb
+    # DBeaver (CloudBeaver - Web version)
+    cloudbeaver:
+        image: dbeaver/cloudbeaver:latest
+        container_name: pdi-cloudbeaver
+        ports:
+            - '8978:8978'
+        volumes:
+            - cloudbeaver-data:/opt/cloudbeaver/workspace
+        networks:
+            - db-network
 
-  # Mongo Express (MongoDB management)
-  mongo-express:
-    image: mongo-express:latest
-    container_name: pdi-mongo-express
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: mongo
-      ME_CONFIG_MONGODB_ADMINPASSWORD: mongo
-      ME_CONFIG_MONGODB_URL: mongodb://mongo:mongo@mongodb:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin
-    ports:
-      - "8083:8081"
-    networks:
-      - db-network
-    depends_on:
-      - mongodb
+    # Beekeeper Studio (via web-based alternative using dbgate)
+    dbgate:
+        image: dbgate/dbgate:latest
+        container_name: pdi-dbgate
+        ports:
+            - '3001:3000'
+        volumes:
+            - dbgate-data:/root/.dbgate
+        networks:
+            - db-network
+        environment:
+            CONNECTIONS: |
+                postgres
+                mysql8
+                mongodb
 
-  # Redis Commander
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: pdi-redis-commander
-    environment:
-      REDIS_HOSTS: local:redis:6379:0:redis
-    ports:
-      - "8084:8081"
-    networks:
-      - db-network
-    depends_on:
-      - redis
+    # Mongo Express (MongoDB management)
+    mongo-express:
+        image: mongo-express:latest
+        container_name: pdi-mongo-express
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: mongo
+            ME_CONFIG_MONGODB_ADMINPASSWORD: mongo
+            ME_CONFIG_MONGODB_URL: mongodb://mongo:mongo@mongodb:27017/
+            ME_CONFIG_BASICAUTH_USERNAME: admin
+            ME_CONFIG_BASICAUTH_PASSWORD: admin
+        ports:
+            - '8083:8081'
+        networks:
+            - db-network
+        depends_on:
+            - mongodb
+
+    # Redis Commander
+    redis-commander:
+        image: rediscommander/redis-commander:latest
+        container_name: pdi-redis-commander
+        environment:
+            REDIS_HOSTS: local:redis:6379:0:redis
+        ports:
+            - '8084:8081'
+        networks:
+            - db-network
+        depends_on:
+            - redis
 
 networks:
-  db-network:
-    driver: bridge
+    db-network:
+        driver: bridge
 
 volumes:
-  postgres-data:
-  mysql8-data:
-  mysql57-data:
-  mariadb-data:
-  mssql-data:
-  oracle-data:
-  sqlite-data:
-  cockroach-data:
-  mongodb-data:
-  redis-data:
-  cassandra-data:
-  neo4j-data:
-  arangodb-data:
-  clickhouse-data:
-  influxdb-data:
-  duckdb-data:
-  neon-data:
-  pgadmin-data:
-  cloudbeaver-data:
-  dbgate-data:
+    postgres-data:
+    mysql8-data:
+    mysql57-data:
+    mariadb-data:
+    mssql-data:
+    oracle-data:
+    sqlite-data:
+    cockroach-data:
+    mongodb-data:
+    redis-data:
+    cassandra-data:
+    neo4j-data:
+    arangodb-data:
+    clickhouse-data:
+    influxdb-data:
+    duckdb-data:
+    neon-data:
+    pgadmin-data:
+    cloudbeaver-data:
+    dbgate-data:
